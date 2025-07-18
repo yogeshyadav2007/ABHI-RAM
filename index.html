@@ -36,19 +36,28 @@
         width: 100vw;
         height: 100vh;
         background: rgba(0, 0, 0, 0.6);
-        z-index: -1;
+        z-index: 0;
+      }
+
+      #fire-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        pointer-events: none;
+        z-index: 0;
+        overflow: hidden;
       }
 
       .fire-particle {
-        position: fixed;
+        position: absolute;
         bottom: 0;
         width: 10px;
         height: 10px;
         background: radial-gradient(circle at center, #ff3c00, #ff7700, transparent);
         border-radius: 50%;
         animation: rise 4s ease-out forwards;
-        pointer-events: none;
-        z-index: -1;
         opacity: 0.9;
       }
 
@@ -70,13 +79,15 @@
         padding: 60px 20px;
         gap: 40px;
         text-align: center;
+        position: relative;
+        z-index: 1;
       }
 
       .top-section {
         display: flex;
         flex-wrap: wrap;
-        gap: 40px;
         justify-content: center;
+        gap: 40px;
         width: 100%;
       }
 
@@ -98,7 +109,6 @@
         display: block;
         width: 100%;
         height: 100%;
-        position: relative;
         border-radius: 12px;
       }
 
@@ -117,9 +127,11 @@
       .profile-pic:nth-child(1) {
         animation-delay: 0s;
       }
+
       .profile-pic:nth-child(2) {
         animation-delay: 4s;
       }
+
       .profile-pic:nth-child(3) {
         animation-delay: 8s;
       }
@@ -152,10 +164,6 @@
         margin-bottom: 1rem;
       }
 
-      .social-links {
-        margin-bottom: 1rem;
-      }
-
       .social-links a {
         color: #fff;
         font-size: 1.8rem;
@@ -184,24 +192,12 @@
         width: 75vw;
       }
 
-      .preview a {
-        display: block;
-        width: 100%;
-        height: 75vh;
-        border-radius: 10px;
-        overflow: hidden;
-        box-shadow: 0 0 15px #ff4500aa;
-        transition: transform 0.4s ease;
-      }
-
-      .preview a:hover {
-        transform: scale(1.02);
-      }
-
       .preview iframe {
         width: 100%;
-        height: 100%;
+        height: 75vh;
         border: none;
+        border-radius: 10px;
+        box-shadow: 0 0 15px #ff4500aa;
       }
 
       .freefire-profile img {
@@ -214,8 +210,12 @@
       }
 
       @keyframes float {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-10px); }
+        0%, 100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
       }
 
       .freefire-profile p {
@@ -237,9 +237,34 @@
       @media (max-width: 768px) {
         .top-section {
           flex-direction: column;
+          align-items: center;
         }
-        .preview, .freefire-profile {
+
+        .left-section {
+          width: 80vw;
+          height: auto;
+        }
+
+        .profile-pic {
+          position: relative;
+          height: auto;
+        }
+
+        .right-section {
+          max-width: 90vw;
+          text-align: center;
+        }
+
+        .preview {
           width: 100vw;
+        }
+
+        .preview iframe {
+          height: 65vh;
+        }
+
+        .freefire-profile img {
+          width: 90vw;
         }
       }
     </style>
@@ -247,6 +272,8 @@
 
   <body>
     <div class="overlay"></div>
+    <div id="fire-container"></div>
+
     <main class="container">
       <div class="top-section">
         <div class="left-section">
@@ -265,7 +292,11 @@
           <h1 class="name">Abhi Ram</h1>
           <p class="tagline">Lover of my bike</p>
           <div class="social-links">
-            <a href="https://www.instagram.com/r._.e_d._.s_h_o._.t" target="_blank" title="Instagram">
+            <a
+              href="https://www.instagram.com/r._.e_d._.s_h_o._.t"
+              target="_blank"
+              title="Instagram"
+            >
               <i class="fab fa-instagram"></i>
             </a>
           </div>
@@ -274,16 +305,23 @@
       </div>
 
       <div class="preview">
-        <a href="https://www.instagram.com/r._.e_d._.s_h_o._.t" target="_blank">
-          <iframe src="https://www.instagram.com/r._.e_d._.s_h_o._.t/embed" title="Instagram preview"></iframe>
-        </a>
+        <iframe
+          src="https://www.instagram.com/r._.e_d._.s_h_o._.t/embed"
+          title="Instagram preview"
+          allowtransparency="true"
+          loading="lazy"
+        ></iframe>
       </div>
 
       <div class="freefire-profile">
         <p>
           Free Fire ID:
           <strong id="ff-id" title="Click to copy" onclick="copyFFID()">1234567890</strong>
-          <span id="copy-status" style="font-size: 0.9rem; color: #7fff00; display: none">Copied!</span>
+          <span
+            id="copy-status"
+            style="font-size: 0.9rem; color: #7fff00; display: none"
+            >Copied!</span
+          >
         </p>
         <img src="images/freefire-profile.png" alt="Free Fire Screenshot" />
       </div>
@@ -292,14 +330,17 @@
     <script>
       function createFireParticle() {
         const particle = document.createElement("div");
+        const size = 6 + Math.random() * 10;
         particle.classList.add("fire-particle");
+        particle.style.width = size + "px";
+        particle.style.height = size + "px";
         particle.style.left = Math.random() * 100 + "vw";
         particle.style.animationDuration = 2 + Math.random() * 2 + "s";
         particle.style.opacity = 0.5 + Math.random() * 0.5;
-        document.body.appendChild(particle);
-
+        document.getElementById("fire-container").appendChild(particle);
         setTimeout(() => particle.remove(), 4000);
       }
+
       setInterval(() => {
         for (let i = 0; i < 6; i++) createFireParticle();
       }, 100);
